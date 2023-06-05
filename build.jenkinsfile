@@ -24,14 +24,6 @@ pipeline {
             }
           }
         }
-
-        stage('Install Dependencies') {
-          steps{
-            script {
-            song.Dependencies()
-            }
-          }
-        }
         
         stage('Creates Docker Image') {
           steps{
