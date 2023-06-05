@@ -10,8 +10,8 @@ pipeline {
         timestamps()
     }
     environment {
-        ECR_REGISTRY = '602997897775.dkr.ecr.eu-central-1.amazonaws.com'
-        IMAGE_NAME = 'song-frontend'
+        ECR_REGISTRY = 'public.ecr.aws/w4c3e7g0'
+        IMAGE_NAME = 'song-runners'
         DOCKER_IMG = "${ECR_REGISTRY}/${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER}"
         TYPE = 'Runner'
         PAT = credentials('PAT')
