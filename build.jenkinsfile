@@ -9,17 +9,12 @@ pipeline {
         disableConcurrentBuilds()
         timestamps()
     }
-    environment {
-        ECR_REGISTRY = 'public.ecr.aws/w4c3e7g0'
-        IMAGE_NAME = 'song-runners'
-        DOCKER_IMG = "${ECR_REGISTRY}/${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER}"
-        TYPE = 'Runner'
-        PAT = credentials('PAT')
-    }
     stages {        
         stage('Creates Docker Image') {
           steps{
-                sh "docker build -t ${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER} ."
+                sh "pwd"
+                sh "ls -la"
+                sh "docker build -t song-runners ."
           }
         }
         
@@ -28,9 +23,9 @@ pipeline {
           steps{
             script {
                  withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS']]) {
-                    sh "docker login -u AWS -p \$(aws ecr get-login-password --region eu-central-1) ${ECR_REGISTRY}"
-                    sh "docker tag ${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER} ${DOCKER_IMG}"
-                    sh "docker push ${DOCKER_IMG}"
+                    sh "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/w4c3e7g0"
+                    sh "docker tag song-runners:latest public.ecr.aws/w4c3e7g0/song-runners:latest"
+                    sh "docker push public.ecr.aws/w4c3e7g0/song-runners:latest"
              }
             }
           }
