@@ -1,0 +1,54 @@
+@Library('SharedLib') _
+
+pipeline {
+    agent {
+        node { label 'oracle' }
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
+        timestamps()
+    }
+    environment {
+        ECR_REGISTRY = '602997897775.dkr.ecr.eu-central-1.amazonaws.com'
+        IMAGE_NAME = 'song-frontend'
+        DOCKER_IMG = "${ECR_REGISTRY}/${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER}"
+        TYPE = 'Runner'
+        PAT = credentials('PAT')
+    }
+    stages {
+        stage('Clones') {
+          steps {
+            script {
+            cleanWs()
+            }
+          }
+        }
+
+        stage('Install Dependencies') {
+          steps{
+            script {
+            song.Dependencies()
+            }
+          }
+        }
+        
+        stage('Creates Docker Image') {
+          steps{
+            script {
+            song.CreateDocker(IMAGE_NAME, BUILD_NUMBER, TYPE)
+            }
+          }
+        }
+        
+        
+        stage('Push image to ECR') {
+          steps{
+            script {
+            song.PushToECR(ECR_REGISTRY, IMAGE_NAME, DOCKER_IMG, TYPE)
+            }
+          }
+        }
+        
+    }
+}
