@@ -17,7 +17,7 @@ pipeline {
         PAT = credentials('PAT')
     }
     stages {
-        stage('Clones') {
+        stage('Cleans workspace') {
           steps {
             script {
             cleanWs()
@@ -27,9 +27,7 @@ pipeline {
         
         stage('Creates Docker Image') {
           steps{
-            script {
-            song.CreateDocker(IMAGE_NAME, BUILD_NUMBER, TYPE)
-            }
+                sh "docker buildx build -t ${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER} --platform linux/amd64 ."
           }
         }
         
@@ -37,7 +35,11 @@ pipeline {
         stage('Push image to ECR') {
           steps{
             script {
-            song.PushToECR(ECR_REGISTRY, IMAGE_NAME, DOCKER_IMG, TYPE)
+                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS']]) {
+                    sh "docker login -u AWS -p \$(aws ecr get-login-password --region eu-central-1) ${ECR_REGISTRY}"
+                    sh "docker tag ${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER} ${DOCKER_IMG}"
+                    sh "docker push ${DOCKER_IMG}"
+             }
             }
           }
         }
