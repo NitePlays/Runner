@@ -16,15 +16,7 @@ pipeline {
         TYPE = 'Runner'
         PAT = credentials('PAT')
     }
-    stages {
-        stage('Cleans workspace') {
-          steps {
-            script {
-            cleanWs()
-            }
-          }
-        }
-        
+    stages {        
         stage('Creates Docker Image') {
           steps{
                 sh "docker build -t ${IMAGE_NAME}:${TYPE}_${BUILD_NUMBER} ."
