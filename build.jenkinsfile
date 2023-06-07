@@ -23,9 +23,9 @@ pipeline {
           steps{
             script {
                  withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS']]) {
-                    sh "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/w4c3e7g0"
-                    sh "docker tag song-runners:latest public.ecr.aws/w4c3e7g0/song-runners:latest"
-                    sh "docker push public.ecr.aws/w4c3e7g0/song-runners:latest"
+                    sh "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/m3t0e0s9"
+                    sh "docker tag song-runners:latest public.ecr.aws/m3t0e0s9/song-runners:latest"
+                    sh "docker push public.ecr.aws/m3t0e0s9/song-runners:latest"
              }
             }
           }
