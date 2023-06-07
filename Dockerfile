@@ -20,6 +20,6 @@ https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
 tee /etc/apt/sources.list.d/hashicorp.list
 RUN wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | tee -a /etc/apt/sources.list.d/trivy.list
-RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin nodejs terraform trivy
+RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin nodejs terraform trivy jq
 RUN usermod -aG docker jenkins
 RUN dockerd; exit 0
